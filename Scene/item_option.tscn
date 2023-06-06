@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://tgmjstcbde0e"]
+
+[ext_resource type="Script" path="res://Script/item_option.gd" id="1_e7itp"]
+
+[node name="ItemOption" type="OptionButton"]
+offset_left = 94.0
+offset_top = 135.0
+offset_right = 279.0
+offset_bottom = 233.0
+script = ExtResource("1_e7itp")

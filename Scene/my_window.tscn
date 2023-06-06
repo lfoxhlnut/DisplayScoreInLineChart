@@ -1,0 +1,58 @@
+[gd_scene load_steps=4 format=3 uid="uid://dx1tlfkw28k7w"]
+
+[ext_resource type="Script" path="res://Script/my_window.gd" id="1_h8nxo"]
+[ext_resource type="Texture2D" uid="uid://bnfsxjvx20aij" path="res://Resource/Png/cancel.png" id="2_ejcwi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_08frd"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="MyWindow" type="Panel"]
+visible = false
+top_level = true
+offset_right = 707.0
+offset_bottom = 482.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_08frd")
+script = ExtResource("1_h8nxo")
+confirm_text = "确认"
+cancel_text = "取消"
+
+[node name="Close" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+texture_normal = ExtResource("2_ejcwi")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Confirm" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = -31.0
+grow_vertical = 0
+
+[node name="Cancel" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -206.0
+offset_top = -97.0
+offset_right = -43.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[connection signal="pressed" from="Close" to="." method="_on_close_pressed"]
+[connection signal="pressed" from="Confirm" to="." method="_on_confirm_pressed"]
+[connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]

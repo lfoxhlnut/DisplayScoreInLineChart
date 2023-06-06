@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://lkn7f5uarq0v"]
+
+[ext_resource type="Script" path="res://Script/item_list.gd" id="1_07th1"]
+
+[node name="ItemList" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_07th1")

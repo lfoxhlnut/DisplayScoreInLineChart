@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://i1svdoinhdnq"]
+
+[ext_resource type="Script" path="res://Script/class_list.gd" id="1_1w173"]
+[ext_resource type="PackedScene" uid="uid://lkn7f5uarq0v" path="res://Scene/item_list.tscn" id="1_h33o0"]
+
+[node name="ClassList" instance=ExtResource("1_h33o0")]
+script = ExtResource("1_1w173")

@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://cw0mrb68fyw05"]
+
+[ext_resource type="Script" path="res://Script/select_file_or_dir.gd" id="1_15ofl"]
+
+[node name="LineEdit" type="LineEdit"]
+offset_right = 391.0
+offset_bottom = 77.0
+caret_blink = true
+caret_blink_interval = 0.5
+script = ExtResource("1_15ofl")
+
+[node name="SelectPath" type="Button" parent="."]
+clip_children = 2
+layout_mode = 0
+offset_left = 1.0
+offset_top = 90.0
+offset_right = 100.0
+offset_bottom = 152.0
+text = "选择文件(夹)"
+
+[connection signal="pressed" from="SelectPath" to="." method="_on_select_path_pressed"]
