@@ -10,6 +10,13 @@ export_presets.cfg
 # Imported translations (automatically generated from CSV files)
 *.translation
 
+# VSCode
+.vscode/
+.history/
+
+# Python
+__pycache__/
+
 # My own ignores
-tmp.tscn
-tmp.gd
+tmp.*
+Example/

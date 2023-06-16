@@ -5,6 +5,14 @@ var SAVE_DIR_PATH := Constant.SAVE_DIR_PATH
 const EXECUTE_SUCCESSFULLY_CODE := 0
 const DELIMITER: Array[String] = ['\r\n', '\n', '\r']	# 后面的分隔符不能包含前面的
 
+
+func _ready():
+	if OS.has_feature('editor'):
+		INTERFACE_FILE_PATH = ProjectSettings.globalize_path('res://Interface/interface.py')
+		INTERFACE_FILE_PATH = 'python ' + INTERFACE_FILE_PATH
+#	OS.shell_open()
+
+
 func print_order(arguments: Array):
 	var order := ''
 	for i in arguments:
@@ -31,43 +39,45 @@ func parse_output(output: String) -> Array[String]:	# u实际上返回的是「A
 
 
 func new_class(my_class_name: String, data_file_path: String) -> int:
-	var arguments = [INTERFACE_FILE_PATH, '--nc', my_class_name, data_file_path, SAVE_DIR_PATH]
+	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'nc', my_class_name, data_file_path]
 	print_order(arguments)
 	
 	return OS.execute('powershell', arguments)
 
 
 func new_test(my_class_name: String, test_name: String, data_file_path: String, geo_bio_point_scale: int) -> int:
-	var arguments = [INTERFACE_FILE_PATH, '--nt', my_class_name, test_name, data_file_path, geo_bio_point_scale, SAVE_DIR_PATH]
+	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'nt', my_class_name, test_name, data_file_path, geo_bio_point_scale]
 	print_order(arguments)
 	
 	return OS.execute('powershell', arguments)
 
 
 func get_class_name_table() -> Array[String]:
-	var arguments = [INTERFACE_FILE_PATH, '--gc', SAVE_DIR_PATH]
+	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'gc']
 	print_order(arguments)
 	
 	var output := []
+#	OS.execute(INTERFACE_FILE_PATH, ['gc'], output)
 	OS.execute('powershell', arguments, output)
 	return parse_output(output[0])
  
 
 func get_test_name_table(my_class_name: String) -> Array[String]:
-	var arguments = [INTERFACE_FILE_PATH, '--gt', my_class_name, SAVE_DIR_PATH]
+	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'gt', my_class_name]
 	print_order(arguments)
 	
 	var output := []
+#	OS.execute(INTERFACE_FILE_PATH, ['gt', my_class_name], output)
 	OS.execute('powershell', arguments, output)
 	return parse_output(output[0])
 
 
 func get_student_name_table(my_class_name: String) -> Array[String]:
-	var arguments = [INTERFACE_FILE_PATH, '--gsn', my_class_name, SAVE_DIR_PATH]
+	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'gsn', my_class_name]
 	print_order(arguments)
 	
 	var output := []
-	OS.execute('powershell', arguments,output)
+	OS.execute('powershell', arguments, output)
 	return parse_output(output[0])
 
 
@@ -75,7 +85,7 @@ func get_student_score_of_all_subject(
 		my_class_name: String,
 		test_name: String,
 		stu_name: String) -> Array[int]:
-	var arguments = [INTERFACE_FILE_PATH, '--gsc', my_class_name, test_name, stu_name, SAVE_DIR_PATH]
+	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'gsc', my_class_name, test_name, stu_name]
 	print_order(arguments)
 	
 	var output = []
@@ -101,15 +111,16 @@ func export(
 	
 	var mask_str: String = str(mask[0])
 	for i in range(1, mask.size()):
-		mask_str += ',' + str(i)
+		mask_str += ',' + str(mask[i])
 	
 	# 传递给程序的参数可以是非字符串类型, 最终都会变成字符串, 行为大概和你把这个参数 print 出来一样
 	# 血的教训, 如果你运行了一个命令但是他没结束, godot 就会等待(具体行为见文档)
 	# 你可能会以为 godot 卡了, 就把 debug 版本强行关掉, 但是他调用的那个程序不会因此被关掉
 	# 可能就一直挂在后台(比如等待用户输入, 你又没让控制台窗口出现, 那就悲催了), 然后你想重新编译那个程序又会提示你被占用.
-	var arguments = [INTERFACE_FILE_PATH, '--ep', my_class_name, mask_str, sub_id, stu_name, export_dir_path, export_file_name_without_suffix, export_format, geo_bio_point_scale, api_provider, SAVE_DIR_PATH]
+	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'ep', my_class_name, mask_str, sub_id, stu_name, export_dir_path, export_file_name_without_suffix, export_format, geo_bio_point_scale, api_provider]
 	print_order(arguments)
 	
+	# execute() 的 命令 里如果含有空格, 会用引号引起来, 所以调用会报错, 但是 argmuents 里的东西就是转换成字符串, 不会加引号
 	return OS.execute('powershell', arguments)
 
 

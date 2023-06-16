@@ -23,7 +23,7 @@ var selected_test_name: String:
 var selected_student_name: String:
 	get:
 		if student_grid.selected_id == [] or class_list.selected_id == []:
-			return ""
+			return ''
 		var stu_id: int = student_grid.selected_id[0]
 		var selected_class: ClassInfo = class_info[class_list.selected_id[0]]
 		return selected_class.get_student(stu_id)
@@ -107,10 +107,9 @@ func examine_data() -> bool:
 		
 	if warn_message != "":
 		Constant.warn(self, warn_message)
-		return false
 	
 	# 其他的数据都有默认值, 不会是空的
-	return true
+	return warn_message == ''
 
 
 func _on_preview_pressed():

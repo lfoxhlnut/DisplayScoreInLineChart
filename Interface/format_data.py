@@ -24,10 +24,11 @@ def get_file_name_without_suffix(path: str) -> str:
     return os.path.splitext(os.path.basename(path))[0]
 
 
+# 转换为 win 下的目录
 def standardize_dir(dir: str) -> str:
     if dir == '':
         return '\\'
-    dir = dir.replace('/', '\\')        # 我是傻逼, 忘记了 replace() 并不会改变原字符串
+    dir = dir.replace('/', '\\')
     if dir[-1] != '\\':
         dir += '\\'
     return dir
@@ -35,8 +36,7 @@ def standardize_dir(dir: str) -> str:
 
 
 
-# 该怎么命名.? format>? construct>?
-def format_base_data_from_wookbook(path: str) -> List[Student]:
+def extract_base_data_from_wookbook(path: str) -> List[Student]:
     wb = load_workbook(path)
     ws = wb['Sheet1']
 
@@ -55,7 +55,7 @@ def format_base_data_from_wookbook(path: str) -> List[Student]:
     return data
 
 
-def format_data_from_wookbook(path: str, geo_bio_point_scale: int = 100, test_name: str = 'auto') -> List[Student]:
+def extract_data_from_wookbook(path: str, geo_bio_point_scale: int = 100, test_name: str = 'auto') -> List[Student]:
     # 分制默认是 100, 那么忘记填的话, 成绩会保持原数据
     assert(geo_bio_point_scale in [50, 100])    # 地理生物分制应该也弄个枚举的
     wb = load_workbook(path)
@@ -143,7 +143,7 @@ def merge(ori: List[Student], add: List[Student]) -> None:
     pass
 
 
-def draw_line_chart(path: str, stu: Student, sub: Subject, mask: List[int], geo_bio_point_scale: int) -> None:
+def export_line_chart(path: str, stu: Student, sub: Subject, mask: List[int], geo_bio_point_scale: int) -> None:
     # 掩码为 1 则显示相应考试成绩, 为 0 则不显示
     if mask == []:
         for i in range(stu.get_test_num()): # 不传入 mask 则默认全显示
@@ -199,8 +199,6 @@ def draw_line_chart(path: str, stu: Student, sub: Subject, mask: List[int], geo_
 
 def convert_xlsx_to_pdf(input_path: str, output_path: str, mode: str = 'ms') -> None:
     # 根据测试, input_path 必须是绝对路径, output_path 可以是相对路径
-    print(input_path)
-    print(output_path)
     dispatch_name: str = 'Excel.Application'
     if mode == 'wps':
         dispatch_name = 'Ket.Application'
