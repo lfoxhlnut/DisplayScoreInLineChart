@@ -1,6 +1,7 @@
-from argparse import ArgumentParser
 from typing import List
 from os import listdir, remove
+from argparse import ArgumentParser
+
 from score_structure import SUBJECT_NUM, SUBJECT_NAME, Student
 from format_data import save_data, load_data, merge, standardize_dir
 from format_data import extract_base_data_from_wookbook, extract_data_from_wookbook
@@ -84,10 +85,9 @@ def export(args: List):
 
 
 def main():
-    parser: ArgumentParser = ArgumentParser(description = 'Python interface used by DisplayScoreInLineChart.exe')
+    parser: ArgumentParser = ArgumentParser(description = 'Interface used by DisplayScoreInLineChart.exe. Developing in python.')
 
     parser.add_argument('save_dir_path', type=standardize_dir)
-    parser.add_argument('--save_file_path', help='should not be incoming, and will be ignored', default='')
     sub_parser = parser.add_subparsers()
 
     nc = sub_parser.add_parser('nc')
@@ -101,39 +101,41 @@ def main():
     nt.add_argument('data_file_path', type=standardize_dir)
     nt.set_defaults(func=new_test)
 
-    gc = sub_parser.add_parser('gc')
-    gc.add_argument('--class_name', help='should not be incoming, and will be ignored', default='')
+    gc = sub_parser.add_parser('gc', help='get class names')
     gc.set_defaults(func=get_class)
 
-    gt = sub_parser.add_parser('gt')
+    gt = sub_parser.add_parser('gt', help='get test names of a certain class')
     gt.add_argument('class_name')
     gt.set_defaults(func=get_test)
 
-    gsn = sub_parser.add_parser('gsn')
+    gsn = sub_parser.add_parser('gsn', help='get student names of a certain class')
     gsn.add_argument('class_name')
     gsn.set_defaults(func=get_student_name)
 
-    gsc = sub_parser.add_parser('gsc')
+    gsc = sub_parser.add_parser('gsc', help='get a student''s score of all subjects')
     gsc.add_argument('class_name')
     gsc.add_argument('test_name')
     gsc.add_argument('stu_name')        # 位置参数似乎不支持手动再设置一个 dest, 这有点不好用, 也许还有其它参数可以达到这个目的>?
     gsc.set_defaults(func=get_score)
 
-    ep = sub_parser.add_parser('ep')
+    ep = sub_parser.add_parser('ep', help='export specified data to xlsx or pdf')
     ep.add_argument('class_name')
-    ep.add_argument('mask_str')
+    ep.add_argument('mask_str', help='test mask, 1 for yes and 0 for no, should be like 1,0,0,1,1')
     ep.add_argument('sub_id', type=int)
     ep.add_argument('stu_name')
     ep.add_argument('export_dir_path', type=standardize_dir)
     ep.add_argument('export_file_basename')
     ep.add_argument('export_format')
     ep.add_argument('geo_bio_point_scale', type=int)
-    ep.add_argument('api_provider')
+    ep.add_argument('api_provider', choices=['ms', 'wps'])
     ep.set_defaults(func=export)
 
     args = parser.parse_args()
+    if not hasattr(args, 'class_name'):
+        args.class_name = ''
     args.save_file_path = args.save_dir_path + args.class_name + save_file_suffix
     args.func(args)
+    # 如果哪天闲得想重构, 可以把 args 解包(这样用: args.func(**args)), 然后修改相应函数的函数头
 
 
 if __name__ == '__main__':

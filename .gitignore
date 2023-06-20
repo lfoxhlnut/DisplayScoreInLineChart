@@ -20,3 +20,4 @@ __pycache__/
 # My own ignores
 tmp.*
 Example/
+bin/

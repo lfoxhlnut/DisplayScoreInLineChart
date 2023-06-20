@@ -16,8 +16,8 @@ func _ready():
 	size = Constant.WIN_SIZE
 #	OS.center_window()
 #	DisplayServer ??
-	print(Interface.INTERFACE_FILE_PATH)
-	print(Interface.SAVE_DIR_PATH)
+	print_debug(Interface.INTERFACE_FILE_PATH)
+	print_debug(Interface.SAVE_DIR_PATH)
 	updated()
 	pass
 

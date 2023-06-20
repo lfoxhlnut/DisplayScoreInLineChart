@@ -1,11 +1,13 @@
+import os
+import pickle
+from typing import List
+
+from win32com.client import Dispatch, CDispatch
 from openpyxl import Workbook, load_workbook
 from openpyxl.chart import LineChart, ScatterChart, Reference, Series
 from openpyxl.chart.label import DataLabelList
-from typing import List
+
 from score_structure import Student, TestInfo, Score, Subject, SUBJECT_NAME, SUBJECT_NUM, SUBJECT_SCORE_LIMIT
-import os
-import pickle
-from win32com.client import Dispatch, CDispatch
 
 
 def load_data(save_path: str) -> List[Student]:
@@ -148,7 +150,7 @@ def export_line_chart(path: str, stu: Student, sub: Subject, mask: List[int], ge
     if mask == []:
         for i in range(stu.get_test_num()): # 不传入 mask 则默认全显示
             mask.append(1)
-    elif len(mask) < stu.get_test_num():    # 未指定的默认不显示(没错, 默认行为可能并不合理)
+    elif len(mask) < stu.get_test_num():    # 未指定的默认不显示
         for i in range(len(mask), stu.get_test_num()):
             mask.append(0)
 
@@ -169,7 +171,6 @@ def export_line_chart(path: str, stu: Student, sub: Subject, mask: List[int], ge
             sub_score /= (100.0 / geo_bio_point_scale)
         ws['B' + str(row)] = sub_score
 
-    # 以下内容几乎全由 new bing 教导而成. 他妈我要是懂英语我会是现在这个样子.?
     chart = LineChart()
     data = Reference(ws, min_col=2, min_row=1, max_row=row)
     chart.add_data(data, from_rows=False, titles_from_data=True)
@@ -199,6 +200,7 @@ def export_line_chart(path: str, stu: Student, sub: Subject, mask: List[int], ge
 
 def convert_xlsx_to_pdf(input_path: str, output_path: str, mode: str = 'ms') -> None:
     # 根据测试, input_path 必须是绝对路径, output_path 可以是相对路径
+    input_path = os.path.abspath(input_path)
     dispatch_name: str = 'Excel.Application'
     if mode == 'wps':
         dispatch_name = 'Ket.Application'

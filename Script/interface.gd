@@ -4,20 +4,22 @@ var INTERFACE_FILE_PATH := OS.get_executable_path().get_base_dir() + '/Interface
 var SAVE_DIR_PATH := Constant.SAVE_DIR_PATH
 const EXECUTE_SUCCESSFULLY_CODE := 0
 const DELIMITER: Array[String] = ['\r\n', '\n', '\r']	# 后面的分隔符不能包含前面的
-
+const use_binary_file := true
 
 func _ready():
 	if OS.has_feature('editor'):
-		INTERFACE_FILE_PATH = ProjectSettings.globalize_path('res://Interface/interface.py')
-		INTERFACE_FILE_PATH = 'python ' + INTERFACE_FILE_PATH
-#	OS.shell_open()
+		if use_binary_file:
+			INTERFACE_FILE_PATH = ProjectSettings.globalize_path('res://Interface/bin/interface.exe')
+		else:
+			INTERFACE_FILE_PATH = 'python ' + ProjectSettings.globalize_path('res://Interface/interface.py')
+
 
 
 func print_order(arguments: Array):
 	var order := ''
 	for i in arguments:
 		order += str(i) + ' '
-	print("order received: ", order)
+	print_debug("order received: ", order)
 
 
 # OS.execute() 的文档说了, output 数组将只包含一个元素, 元素内容是进程在 shell 里的全部输出. 我没看见, 我是傻逼

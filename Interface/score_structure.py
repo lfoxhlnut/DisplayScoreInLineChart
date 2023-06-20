@@ -1,6 +1,5 @@
 from enum import IntEnum, auto
 from typing import List
-import numpy as np
 from copy import deepcopy
 
 
@@ -46,7 +45,6 @@ SUBJECT_SCORE_LIMIT: List[str] = [
 class Score:
     min_width: int = 3
     def __init__(self, score: List[float] = []) -> None:
-        # self.__score: np.array = np.empty(1, SUBJECT_NUM)
         self.__score: list = []
         for i in range(SUBJECT_NUM):
             self.__score.append(-1)
