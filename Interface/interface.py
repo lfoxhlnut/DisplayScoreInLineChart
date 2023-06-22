@@ -3,18 +3,16 @@ from os import listdir, remove
 from argparse import ArgumentParser
 
 from score_structure import SUBJECT_NUM, SUBJECT_NAME, Student
-from format_data import save_data, load_data, merge, standardize_dir
-from format_data import extract_base_data_from_wookbook, extract_data_from_wookbook
-from format_data import extract_test_name_from_data, extract_student_name_from_data
-from format_data import export_line_chart, convert_xlsx_to_pdf
+from format_data import *
 
-# 在实现中, 一个班级的所有信息都在一个 List[Student] 中, 所以一个文件足以存放一个班级的所有信息
-# 或者也可以说只能用一个文件来存放比较合适, 无法拆成多个文件还易用
-# 如果哪天重构, 重构成 对应的 gd4 项目里的那种数据结构, 就可以有比较优雅的存档文件了
+# 在实现中, 一个班级的所有信息都在一个 List[Student] 中
+# 如果哪天重构(其实感觉也没啥必要, 实现并没有过于丑陋),
+# 可以把班级的信息分成 test name 和 student, 而不是 student 里包含 test name
 # 另外, 重构的时候注意区分 file_path 和 dir_path, 在参数名称里写明
+# 还可以考虑输出时使用逗号而非换行符分隔
 
 save_file_suffix: str = '.dat'
-# 以后可以考虑使用 pathlib 来处理路径相关
+# 重构时考虑使用 pathlib 来处理路径相关
 
 def new_class(args: List):
     base_data: List[str] = extract_base_data_from_wookbook(args.data_file_path)
@@ -51,23 +49,20 @@ def get_student_name(args: List):
 
 def get_score(args: List):
     data = load_data(args.save_file_path)
-    for stu in data:
-        if stu.get_name() == args.stu_name:
-            for i in range(1, stu.get_test_num()):
-                if stu.get_test(i).get_name() == args.test_name:
-                    score = stu.get_test(i).get_score()
-                    print('\n'.join(str(score.get_score_by_id(i)) for i in range(SUBJECT_NUM)))
+    stu = get_student_from_data(args.stu_name, data)
+
+    # 每个 stu 里的 test info 是按照添加的顺序来的, 没有排序过, 不能二分查找
+    for i in range(1, stu.get_test_num()):
+        if stu.get_test(i).get_name() == args.test_name:
+            score = stu.get_test(i).get_score()
+            print('\n'.join(str(score.get_score_by_id(i)) for i in range(SUBJECT_NUM)))
 
 
 def export(args: List):
-    # 可以考虑把寻找 stu 的功能抽离成单独的函数
-    # 可以考虑在 argparse 解析时就准备好 stu 和 mask
-    stu: Student
+    # 可以考虑在 argparse 解析时就准备好 mask
+    # 也可以考虑在解析参数时就准备好 stu, 不过这要求先准备好 data, 在不是所有子命令都有这种需求的情况下, 这样做可能有点麻烦还不优雅
     data = load_data(args.save_file_path)
-    for i in data:
-        if i.get_name() == args.stu_name:
-            stu = i
-            break
+    stu: Student = get_student_from_data(args.stu_name, data)
 
     if args.export_file_basename == 'auto':
         args.export_file_basename = args.stu_name + SUBJECT_NAME[args.sub_id] + '成绩分析'

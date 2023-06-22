@@ -75,7 +75,6 @@ class Score:
             if i + 1 != SUBJECT_NUM:
                 val += ', '
         return val
-        # return ', '.join(f'[{SUBJECT_NAME[i]}:{self.__score[i]:{Score.min_width}}]' for i in range(SUBJECT_NUM) if self.__score[i] != -1)
 
 
 class TestInfo:

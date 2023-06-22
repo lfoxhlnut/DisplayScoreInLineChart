@@ -4,12 +4,12 @@ var INTERFACE_FILE_PATH := OS.get_executable_path().get_base_dir() + '/Interface
 var SAVE_DIR_PATH := Constant.SAVE_DIR_PATH
 const EXECUTE_SUCCESSFULLY_CODE := 0
 const DELIMITER: Array[String] = ['\r\n', '\n', '\r']	# 后面的分隔符不能包含前面的
-const use_binary_file := true
+const use_binary_file := false
 
 func _ready():
 	if OS.has_feature('editor'):
 		if use_binary_file:
-			INTERFACE_FILE_PATH = ProjectSettings.globalize_path('res://Interface/bin/interface.exe')
+			INTERFACE_FILE_PATH = ProjectSettings.globalize_path('res://Binary/interface.exe')
 		else:
 			INTERFACE_FILE_PATH = 'python ' + ProjectSettings.globalize_path('res://Interface/interface.py')
 
@@ -22,8 +22,7 @@ func print_order(arguments: Array):
 	print_debug("order received: ", order)
 
 
-# OS.execute() 的文档说了, output 数组将只包含一个元素, 元素内容是进程在 shell 里的全部输出. 我没看见, 我是傻逼
-func parse_output(output: String) -> Array[String]:	# u实际上返回的是「Array[String]」
+func parse_output(output: String) -> Array[String]:
 	var delimiter: String
 	
 	for i in DELIMITER:
@@ -33,8 +32,6 @@ func parse_output(output: String) -> Array[String]:	# u实际上返回的是「A
 #	return (output.split(delimiter) as Array[String])	# 这句应该有用, 但是没用, 不知道为什么
 	
 	var result: Array[String] = []
-	# ↓这里使用的是 false, 是因为如果 output 是 '123\r\n', split 结果就是 ['123', '']
-	# 然而有时还有更多的需求使得用 true 还是用 false 有些冲突
 	for i in output.split(delimiter, false):
 		result.append(i)
 	return result
@@ -59,7 +56,6 @@ func get_class_name_table() -> Array[String]:
 	print_order(arguments)
 	
 	var output := []
-#	OS.execute(INTERFACE_FILE_PATH, ['gc'], output)
 	OS.execute('powershell', arguments, output)
 	return parse_output(output[0])
  
@@ -69,7 +65,6 @@ func get_test_name_table(my_class_name: String) -> Array[String]:
 	print_order(arguments)
 	
 	var output := []
-#	OS.execute(INTERFACE_FILE_PATH, ['gt', my_class_name], output)
 	OS.execute('powershell', arguments, output)
 	return parse_output(output[0])
 

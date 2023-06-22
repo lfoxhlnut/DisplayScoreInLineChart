@@ -1,9 +1,9 @@
-$to_del = 'bin', 'interface.build', 'interface.dist'
+$to_del = 'interface.build', 'interface.dist'
 foreach ($folder in $to_del)
 {
-    if (test-path -path $folder)
+    if (Test-Path -Path:$folder)
     {
-        remove-item $folder -force
+        Remove-Item -Path:$folder -Recurse -Force -Confirm:$false
     }
 }
 
@@ -19,4 +19,4 @@ nuitka --mingw64 --standalone `
     --remove-output `
     .\interface.py
 
-rename-item -path interface.dist -newname bin
+Move-Item -Path:'interface.dist\*' -Destination:'..\Binary\' -Force

@@ -4,8 +4,7 @@ signal warn_closed
 
 const WIN_SIZE := Vector2(1920, 1080)
 var SAVE_DIR_PATH := OS.get_user_data_dir() + '/save/'
-# 不可以直接用 user://, 这不是绝对路径, 而 interface 里的某些选项需要绝对路径
-	
+
 enum Subject {
 	CN,
 	MATH,
@@ -28,8 +27,7 @@ const SUBJECT_NAME: Array[String] = [
 	"历史",
 	"地理",
 ]
-#const SUBJECT_NUM := Subject.values().size()
-const SUBJECT_NUM := 9
+var SUBJECT_NUM := Subject.values().size()	# 用 const 会报错
 enum PointScale {
 	point_scale_of_50 = 50,		# 此处枚举值的设立似乎只在这种成倍数的关系中方便
 	point_scale_of_100 = 100,	# 不过管他呢, 有需求了再改
@@ -62,7 +60,6 @@ func remove_and_free_children_added_in_runtime(n: Node) -> void:
 func warn(node: Node, info: String):
 	var warn_page := AcceptDialog.new()
 	warn_page.dialog_text = info
-#	warn_page.close_requested.connect(func(): warn_page.free())
 	node.add_child(warn_page)
 	warn_page.popup(Rect2i(WIN_SIZE * 0.15, WIN_SIZE * 0.6))
 	await warn_page.close_requested

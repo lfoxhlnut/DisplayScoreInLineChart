@@ -1,7 +1,5 @@
 extends Resource
 
-# 我这里是重写了一遍 Score 等类, 似乎不大好, 但是我不知道解决方法
-
 var s: Array:
 	set(val):
 		assert(val is Array)

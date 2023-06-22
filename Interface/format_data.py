@@ -1,6 +1,7 @@
 import os
 import pickle
 from typing import List
+from bisect import bisect_left
 
 from win32com.client import Dispatch, CDispatch
 from openpyxl import Workbook, load_workbook
@@ -36,6 +37,11 @@ def standardize_dir(dir: str) -> str:
     return dir
 
 
+def get_student_from_data(stu_name: str, data: List[Student]) -> Student:
+    id: int = bisect_left(data, Student(stu_name))
+    if id != len(data) and data[id].get_name() == stu_name:
+        return data[id]
+    return Student()
 
 
 def extract_base_data_from_wookbook(path: str) -> List[Student]:
@@ -107,7 +113,6 @@ def extract_test_name_from_data(data: List[Student]) -> List[str]:
     test_name_list: List[str] = []
 
     # 根据 merge 里的规则,即使有学生没来考试,他的纪录中依然包含了这次成绩
-    # 似乎让每个学生的信息都包含着考试名称有些不太好, 不过这个之后再改吧(应当是班级包含考试, 也包含学生)
     for id in range(data[0].get_test_num()):
         test = data[0].get_test(id)
         test_name_list.append(test.get_name())
