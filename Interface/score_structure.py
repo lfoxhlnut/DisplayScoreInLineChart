@@ -126,6 +126,10 @@ class Student:
         return self.__test[id]
 
 
+    def del_test(self, id: int) -> None:
+        del self.__test[id]
+
+
     def get_test_num(self) -> int:
         return len(self.__test)
         # 在实际使用中, 第一个 test_info(self.__test[0]) 只是辅助用的, 并非具体考试, 不会显示

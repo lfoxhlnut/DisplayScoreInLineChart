@@ -38,44 +38,43 @@ func parse_output(output: String) -> Array[String]:
 
 
 func new_class(my_class_name: String, data_file_path: String) -> int:
-	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'nc', my_class_name, data_file_path]
+	var arguments := [SAVE_DIR_PATH, 'nc', my_class_name, data_file_path]
 	print_order(arguments)
 	
-	return OS.execute('powershell', arguments)
+	return OS.execute('powershell', [INTERFACE_FILE_PATH] + arguments)
 
 
 func new_test(my_class_name: String, test_name: String, data_file_path: String, geo_bio_point_scale: int) -> int:
-	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'nt', my_class_name, test_name, data_file_path, geo_bio_point_scale]
+	var arguments := [SAVE_DIR_PATH, 'nt', my_class_name, test_name, data_file_path, geo_bio_point_scale]
 	print_order(arguments)
 	
-	return OS.execute('powershell', arguments)
+	return OS.execute('powershell', [INTERFACE_FILE_PATH] + arguments)
 
 
 func get_class_name_table() -> Array[String]:
-	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'gc']
+	var arguments := [SAVE_DIR_PATH, 'gc']
 	print_order(arguments)
 	
 	var output := []
-	OS.execute('powershell', arguments, output)
+	OS.execute('powershell', [INTERFACE_FILE_PATH] + arguments, output)
 	return parse_output(output[0])
  
 
 func get_test_name_table(my_class_name: String) -> Array[String]:
-	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'gt', my_class_name]
+	var arguments := [SAVE_DIR_PATH, 'gt', my_class_name]
 	print_order(arguments)
 	
 	var output := []
-	OS.execute('powershell', arguments, output)
+	OS.execute('powershell', [INTERFACE_FILE_PATH] + arguments, output)
 	return parse_output(output[0])
 
 
 func get_student_name_table(my_class_name: String) -> Array[String]:
-	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'gsn', my_class_name]
+	var arguments := [SAVE_DIR_PATH, 'gsn', my_class_name]
 	print_order(arguments)
 	
 	var output := []
-	OS.execute('powershell', arguments, output)
-#	print(parse_output(output[0]))
+	OS.execute('powershell', [INTERFACE_FILE_PATH] + arguments, output)
 	return parse_output(output[0])
 
 
@@ -83,11 +82,11 @@ func get_student_score_of_all_subject(
 		my_class_name: String,
 		test_name: String,
 		stu_name: String) -> Array[int]:
-	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'gsc', my_class_name, test_name, stu_name]
+	var arguments := [SAVE_DIR_PATH, 'gsc', my_class_name, test_name, stu_name]
 	print_order(arguments)
 	
-	var output = []
-	OS.execute('powershell', arguments, output)
+	var output := []
+	OS.execute('powershell', [INTERFACE_FILE_PATH] + arguments, output)
 	var parsed_output := parse_output(output[0])
 	var int_output: Array[int] = []
 	for i in parsed_output.size():
@@ -115,15 +114,21 @@ func export(
 	# 血的教训, 如果你运行了一个命令但是他没结束, godot 就会等待(具体行为见文档)
 	# 你可能会以为 godot 卡了, 就把 debug 版本强行关掉, 但是他调用的那个程序不会因此被关掉
 	# 可能就一直挂在后台(比如等待用户输入, 你又没让控制台窗口出现, 那就悲催了), 然后你想重新编译那个程序又会提示你被占用.
-	var arguments = [INTERFACE_FILE_PATH, SAVE_DIR_PATH, 'ep', my_class_name, mask_str, sub_id, stu_name, export_dir_path, export_file_name_without_suffix, export_format, geo_bio_point_scale, api_provider]
+	var arguments := [SAVE_DIR_PATH, 'ep', my_class_name, mask_str, sub_id, stu_name, export_dir_path, export_file_name_without_suffix, export_format, geo_bio_point_scale, api_provider]
 	print_order(arguments)
 	
 	# execute() 的 命令 里如果含有空格, 会用引号引起来, 所以调用会报错, 但是 argmuents 里的东西就是转换成字符串, 不会加引号
-	return OS.execute('powershell', arguments)
+	return OS.execute('powershell', [INTERFACE_FILE_PATH] + arguments)
 
 
-func del_class(_my_class_name: String):
-	pass
+func del_class(my_class_name: String) -> int:
+	var arguments := [SAVE_DIR_PATH, 'dc', my_class_name]
+	return OS.execute('powershell', [INTERFACE_FILE_PATH] + arguments)
+
+
+func del_test(my_class_name: String, test_id: int) -> int:
+	var arguments := [SAVE_DIR_PATH, 'dt', my_class_name, test_id]
+	return OS.execute('powershell', [INTERFACE_FILE_PATH] + arguments)
 
 
 func del_all_class():

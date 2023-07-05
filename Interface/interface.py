@@ -14,41 +14,41 @@ from format_data import *
 save_file_suffix: str = '.dat'
 # 重构时考虑使用 pathlib 来处理路径相关
 
-def new_class(args: List):
+def new_class(args: List) -> None:
     base_data: List[str] = extract_base_data_from_wookbook(args.data_file_path)
     save_data(args.save_file_path, base_data)
 
 
-def new_test(args: List):
+def new_test(args: List) -> None:
     new_data: List[str] = extract_data_from_wookbook(args.data_file_path, args.geo_bio_point_scale, args.test_name)
     ori_data: List[str] = load_data(args.save_file_path)
     merge(ori_data, new_data)
     save_data(args.save_file_path, ori_data)
 
 
-def get_class(args: List):
+def get_class(args: List) -> None:
     for file_name in listdir(args.save_dir_path):
         if save_file_suffix in file_name:
             print(file_name.split('.')[0])
 
 
-def get_test(args: List):
-    data = load_data(args.save_file_path)
+def get_test(args: List) -> None:
+    data: List[Student] = load_data(args.save_file_path)
     name_list: List[str] = extract_test_name_from_data(data)[1:]
     # print(','.join(name_list))
     for i in name_list:
         print(i)
 
 # 应该把 get test 和 get stu name 合并成一个函数, 即使对数据结构进行了重构
-def get_student_name(args: List):
-    data = load_data(args.save_file_path)
+def get_student_name(args: List) -> None:
+    data: List[Student] = load_data(args.save_file_path)
     name_list: List[str] = extract_student_name_from_data(data)
     for i in name_list:
         print(i)
 
 
-def get_score(args: List):
-    data = load_data(args.save_file_path)
+def get_score(args: List) -> None:
+    data: List[Student] = load_data(args.save_file_path)
     stu = get_student_from_data(args.stu_name, data)
 
     # 每个 stu 里的 test info 是按照添加的顺序来的, 没有排序过, 不能二分查找
@@ -58,10 +58,10 @@ def get_score(args: List):
             print('\n'.join(str(score.get_score_by_id(i)) for i in range(SUBJECT_NUM)))
 
 
-def export(args: List):
+def export(args: List) -> None:
     # 可以考虑在 argparse 解析时就准备好 mask
     # 也可以考虑在解析参数时就准备好 stu, 不过这要求先准备好 data, 在不是所有子命令都有这种需求的情况下, 这样做可能有点麻烦还不优雅
-    data = load_data(args.save_file_path)
+    data: List[Student] = load_data(args.save_file_path)
     stu: Student = get_student_from_data(args.stu_name, data)
 
     if args.export_file_basename == 'auto':
@@ -79,7 +79,17 @@ def export(args: List):
         remove(xlsx_file_path)
 
 
-def main():
+def del_class(args: List) -> None:
+    remove(args.save_file_path)
+
+
+def del_test(args: List) -> None:
+    data: List[Student] = load_data(args.save_file_path)
+    for stu in data:
+        stu.del_test(args.test_id + 1)  # 因为 get_test() 的输出并不包含第一个
+
+
+def main() -> None:
     parser: ArgumentParser = ArgumentParser(description = 'Interface used by DisplayScoreInLineChart.exe. Developing in python.')
 
     parser.add_argument('save_dir_path', type=standardize_dir)
@@ -124,6 +134,15 @@ def main():
     ep.add_argument('geo_bio_point_scale', type=int)
     ep.add_argument('api_provider', choices=['ms', 'wps'])
     ep.set_defaults(func=export)
+
+    dc = sub_parser.add_parser('dc', help='del specified class''s save')
+    dc.add_argument('class_name')
+    dc.set_defaults(func=del_class)
+
+    dt = sub_parser.add_parser('dt', help='del specified test''s save of certain class')
+    dt.add_argument('class_name')
+    dt.add_argument('test_id', type=int)
+    dt.set_defaults(func=del_test)
 
     args = parser.parse_args()
     if not hasattr(args, 'class_name'):
