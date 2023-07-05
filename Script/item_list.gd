@@ -88,6 +88,3 @@ func get_new_container() -> Container:
 
 func _on_button_pressed(id: int):
 	button_flag[id] ^= 1
-#	print('button flag[%d] = %d -> %d' % [id, button_flag[id], button_flag[id] ^ 1])
-#	print(button_flag)
-

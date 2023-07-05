@@ -22,6 +22,7 @@ var student_name := []:
 			student_name = []
 			for i in range(MAX_STUDENT_NUM):
 				student_name.append(val[i])
+
 var test_num: int:
 	get:
 		return test_name.size()
@@ -48,3 +49,11 @@ func _to_string() -> String:
 	info += '], test name:[' + ', '.join(test_name)
 	info += '], student name:[' + ', '.join(student_name) + ']'
 	return info
+
+
+# Resource 类的 duplicate() 在自定义的 Resource 子类上似乎有问题, 于是只好手动深复制
+func deepcopy() -> ClassInfo:
+	var dst := ClassInfo.new(my_class_name)
+	dst.test_name = test_name.duplicate()	# 这是数组的深复制, 没问题
+	dst.student_name = student_name.duplicate()
+	return dst

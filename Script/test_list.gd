@@ -4,7 +4,7 @@ var class_info: ClassInfo
 
 
 func update(data: ClassInfo) -> void:
-	class_info = data
+	class_info = data.deepcopy()
 	_update(class_info.test_num)
 
 

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgk2vhptcpa50"]
+
+[ext_resource type="Script" path="res://Script/interface.gd" id="1_dk282"]
+
+[node name="Interface" type="Node"]
+script = ExtResource("1_dk282")

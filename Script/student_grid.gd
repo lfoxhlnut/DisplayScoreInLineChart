@@ -4,7 +4,7 @@ var class_info: ClassInfo
 
 
 func update(data: ClassInfo):
-	class_info = data.duplicate() as ClassInfo
+	class_info = data.deepcopy()
 	_container.columns = floori(sqrt(class_info.student_num))
 	button_min_size.x = size.x / _container.columns
 	button_min_size.y = size.y / (float(class_info.student_num) / _container.columns + 1)

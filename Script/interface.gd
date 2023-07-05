@@ -4,7 +4,7 @@ var INTERFACE_FILE_PATH := OS.get_executable_path().get_base_dir() + '/Interface
 var SAVE_DIR_PATH := Constant.SAVE_DIR_PATH
 const EXECUTE_SUCCESSFULLY_CODE := 0
 const DELIMITER: Array[String] = ['\r\n', '\n', '\r']	# 后面的分隔符不能包含前面的
-const use_binary_file := false
+@export var use_binary_file := false
 
 func _ready():
 	if OS.has_feature('editor'):
@@ -75,6 +75,7 @@ func get_student_name_table(my_class_name: String) -> Array[String]:
 	
 	var output := []
 	OS.execute('powershell', arguments, output)
+#	print(parse_output(output[0]))
 	return parse_output(output[0])
 
 
